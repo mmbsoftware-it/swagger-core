@@ -33,7 +33,7 @@ class ModelPropertyParser(cls: Class[_], t: Map[String, String] = Map.empty) (im
   def parse = Option(cls).map(parseRecursive(_))
 
   def parseRecursive(hostClass: Class[_]): Unit = {
-    if(!hostClass.isEnum) {
+    if(!hostClass.isEnum && !(hostClass.getSimpleName == "Object")) {
       LOGGER.debug("processing class " + hostClass)
 
       val ignoredProperties = parseIgnorePropertiesClassAnnotation(hostClass)
