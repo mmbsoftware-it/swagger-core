@@ -33,7 +33,11 @@ class ModelPropertyParser(cls: Class[_], t: Map[String, String] = Map.empty) (im
   def parse = Option(cls).map(parseRecursive(_))
 
   def parseRecursive(hostClass: Class[_]): Unit = {
-    if(!hostClass.isEnum && !(hostClass.getSimpleName == "Object")) {
+    if(hostClass.isEnum) {
+      LOGGER.debug("Not processing enum class " + hostClass)
+    } else if(hostClass.getName == "java.lang.Object") {
+      LOGGER.debug("Not processing java.lang.Object class " + hostClass)
+    } else {
       LOGGER.debug("processing class " + hostClass)
 
       val ignoredProperties = parseIgnorePropertiesClassAnnotation(hostClass)
@@ -63,9 +67,6 @@ class ModelPropertyParser(cls: Class[_], t: Map[String, String] = Map.empty) (im
       }
 
       Option(hostClass.getSuperclass).map(parseRecursive(_))
-    }
-    else {
-      LOGGER.debug("Not processing enum class " + hostClass)
     }
   }
 
